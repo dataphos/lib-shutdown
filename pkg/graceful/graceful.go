@@ -8,6 +8,8 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+
+	"github.com/pkg/errors"
 )
 
 // WithSignalShutdown returns a new ctx derived from the one given, which will be canceled when this process
@@ -65,6 +67,7 @@ func listenAndServe(srv *http.Server, certAndKeyFiles *tlsCertFiles) error {
 		defer cancel()
 
 		_ = srv.Shutdown(ctx)
+
 		close(idleConnsClosed)
 	}()
 
@@ -76,10 +79,11 @@ func listenAndServe(srv *http.Server, certAndKeyFiles *tlsCertFiles) error {
 		err = srv.ListenAndServe()
 	}
 
-	if err != http.ErrServerClosed {
+	if !errors.Is(err, http.ErrServerClosed) {
 		return err
 	}
 
 	<-idleConnsClosed
+
 	return nil
 }
