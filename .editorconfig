@@ -23,6 +23,7 @@ indent_size = 4
 [*.md]
 indent_size = 2
 trim_trailing_whitespace = false
+insert_final_newline = true
 
 eclint_indent_style = unset
 
@@ -69,3 +70,6 @@ insert_final_newline = unset
 trim_trailing_whitespace = unset
 indent_style = unset
 indent_size = unset
+
+[**/LICENSE-3RD-PARTY.md]
+insert_final_newline = unset
