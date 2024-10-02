@@ -2,6 +2,7 @@
 
 ## 1.0.0 (2024-10-02)
 
+**Contributors:** [@andrijadukic-syntio](https://github.com/andrijadukic-syntio)
 
 ### ⚠ BREAKING CHANGES
 
