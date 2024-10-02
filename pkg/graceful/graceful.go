@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// WithSignalShutdown returns a new ctx derived from the one given, which will be cancelled when this process
+// WithSignalShutdown returns a new ctx derived from the one given, which will be canceled when this process
 // receives a SIGTERM or SIGQUIT signal.
 func WithSignalShutdown(ctx context.Context) context.Context {
 	ctx, cancel := context.WithCancel(ctx)
@@ -54,6 +54,7 @@ type tlsCertFiles struct {
 
 func listenAndServe(srv *http.Server, certAndKeyFiles *tlsCertFiles) error {
 	idleConnsClosed := make(chan struct{})
+
 	go func() {
 		c := make(chan os.Signal, 1)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM, syscall.SIGQUIT)
@@ -62,16 +63,19 @@ func listenAndServe(srv *http.Server, certAndKeyFiles *tlsCertFiles) error {
 
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
+
 		_ = srv.Shutdown(ctx)
 		close(idleConnsClosed)
 	}()
 
 	var err error
+
 	if certAndKeyFiles != nil {
 		err = srv.ListenAndServeTLS(certAndKeyFiles.certFile, certAndKeyFiles.keyFile)
 	} else {
 		err = srv.ListenAndServe()
 	}
+
 	if err != http.ErrServerClosed {
 		return err
 	}
